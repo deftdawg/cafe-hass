@@ -705,11 +705,10 @@ export class YamlParser {
 
     // Parse triggers
     const triggerData = content.triggers || content.trigger;
-    if (!triggerData) {
-      warnings.push('No triggers found in automation');
-      return { nodes, edges };
+    const triggers = Array.isArray(triggerData) ? triggerData : triggerData ? [triggerData] : [];
+    if (triggers.length === 0) {
+      throw new Error('Automation has no trigger. Please add at least one trigger.');
     }
-    const triggers = Array.isArray(triggerData) ? triggerData : [triggerData];
     const triggerNodes = this.parseTriggers(
       triggers as Record<string, unknown>[],
       warnings,
@@ -1055,11 +1054,10 @@ export class YamlParser {
 
     // Parse triggers (support both 'trigger' and 'triggers')
     const triggerData = content.triggers || content.trigger;
-    if (!triggerData) {
-      warnings.push('No triggers found in automation');
-      return { nodes, edges };
+    const triggers = Array.isArray(triggerData) ? triggerData : triggerData ? [triggerData] : [];
+    if (triggers.length === 0) {
+      throw new Error('Automation has no trigger. Please add at least one trigger.');
     }
-    const triggers = Array.isArray(triggerData) ? triggerData : [triggerData];
     const triggerNodes = this.parseTriggers(triggers, warnings, getNextNodeId);
     nodes.push(...triggerNodes);
 
