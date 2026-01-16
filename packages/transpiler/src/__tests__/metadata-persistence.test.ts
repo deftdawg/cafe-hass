@@ -635,7 +635,9 @@ mode: single
       const parsed = await parser.parse(noTriggerYaml);
 
       expect(parsed.success).toBe(false);
-      expect(parsed.warnings).toContain('No triggers found in automation');
+      expect(parsed.errors).toContain(
+        'Automation has no trigger. Please add at least one trigger.'
+      );
     });
 
     it('should handle corrupted metadata gracefully', async () => {

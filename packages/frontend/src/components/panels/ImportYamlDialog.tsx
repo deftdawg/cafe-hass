@@ -2,6 +2,7 @@ import { transpiler } from '@cafe/transpiler';
 import { useReactFlow } from '@xyflow/react';
 import { AlertCircle, CheckCircle, Upload } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
@@ -41,9 +42,7 @@ export function ImportYamlDialog({ isOpen, onClose, onImportSuccess }: ImportYam
       const result = await transpiler.fromYaml(yamlText);
 
       if (!result.success) {
-        setError(result.errors?.join('\n') || 'Failed to parse YAML. Please check the format.');
-        setImporting(false);
-        return;
+        throw new Error(result.errors?.join('\n') || 'Failed to parse YAML');
       }
 
       // Set warnings if any
@@ -71,7 +70,11 @@ export function ImportYamlDialog({ isOpen, onClose, onImportSuccess }: ImportYam
         }, 1000);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error occurred');
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      setError(errorMessage);
+      toast.error('Import Failed', {
+        description: <pre className="mt-1 whitespace-pre-wrap font-mono text-xs">{errorMessage}</pre>,
+      });
     } finally {
       setImporting(false);
     }
