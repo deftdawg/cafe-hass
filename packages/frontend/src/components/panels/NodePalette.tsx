@@ -105,7 +105,7 @@ export function NodePalette() {
   }, []);
 
   return (
-    <div className="space-y-2 p-4">
+    <div className="space-y-2 p-4" data-testid="node-palette">
       <h3 className="mb-3 font-semibold text-muted-foreground text-sm">Add Node</h3>
       <div className="space-y-2">
         {nodeTypes.map((config) => (
