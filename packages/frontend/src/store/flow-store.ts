@@ -144,6 +144,9 @@ interface FlowState {
   // Shared simulation/trace state
   simulationSpeed: number;
 
+  // Callbacks
+  onNodeAdded: ((node: Node<FlowNodeData>) => void) | null;
+
   // Actions
   setNodes: (nodes: Node<FlowNodeData>[]) => void;
   setEdges: (edges: Edge[]) => void;
@@ -152,6 +155,7 @@ interface FlowState {
   onConnect: (connection: Connection) => void;
 
   addNode: (node: Node<FlowNodeData>) => void;
+  setOnNodeAdded: (onNodeAdded: (node: Node<FlowNodeData>) => void) => void;
   updateNodeData: (nodeId: string, data: Partial<FlowNodeData>) => void;
   removeNode: (nodeId: string) => void;
 
@@ -212,6 +216,7 @@ const initialState = {
   traceExecutionPath: [],
   traceTimestamps: {},
   simulationSpeed: 800,
+  onNodeAdded: null,
 };
 
 export const useFlowStore = create<FlowState>((set, get) => ({
@@ -245,11 +250,15 @@ export const useFlowStore = create<FlowState>((set, get) => ({
       hasUnsavedChanges: true,
     })),
 
-  addNode: (node) =>
+  addNode: (node) => {
     set((state) => ({
       nodes: [...state.nodes, node],
       hasUnsavedChanges: true,
-    })),
+    }));
+    get().onNodeAdded?.(node);
+  },
+
+  setOnNodeAdded: (onNodeAdded) => set({ onNodeAdded }),
 
   updateNodeData: (nodeId, data) =>
     set((state) => ({
