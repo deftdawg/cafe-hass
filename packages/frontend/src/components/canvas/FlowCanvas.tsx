@@ -57,10 +57,11 @@ export function FlowCanvas() {
     isShowingTrace,
     traceExecutionPath,
     canDeleteEdge,
+    setFitView,
   } = useFlowStore();
 
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  const { screenToFlowPosition, setViewport } = useReactFlow();
+  const { screenToFlowPosition, setViewport, fitView } = useReactFlow();
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
   // Enable copy/paste support only inside the canvas
   useCopyPaste(rfInstance, reactFlowWrapper);
@@ -69,6 +70,11 @@ export function FlowCanvas() {
   useEffect(() => {
     setViewport({ x: 0, y: 0, zoom: 0.75 });
   }, [setViewport]);
+
+  // Pass fitView to the store
+  useEffect(() => {
+    setFitView(fitView);
+  }, [fitView, setFitView]);
 
   const onSelectionChange = useCallback(
     ({ nodes: selectedNodes }: OnSelectionChangeParams) => {

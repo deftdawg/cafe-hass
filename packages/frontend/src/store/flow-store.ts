@@ -144,6 +144,9 @@ interface FlowState {
   // Shared simulation/trace state
   simulationSpeed: number;
 
+  // Viewport actions
+  fitView: (() => void) | null;
+
   // Actions
   setNodes: (nodes: Node<FlowNodeData>[]) => void;
   setEdges: (edges: Edge[]) => void;
@@ -159,6 +162,9 @@ interface FlowState {
 
   setFlowName: (name: string) => void;
   setFlowDescription: (description: string) => void;
+
+  // Viewport actions
+  setFitView: (fitView: () => void) => void;
 
   // Save actions
   setAutomationId: (id: string | null) => void;
@@ -212,6 +218,7 @@ const initialState = {
   traceExecutionPath: [],
   traceTimestamps: {},
   simulationSpeed: 800,
+  fitView: null,
 };
 
 export const useFlowStore = create<FlowState>((set, get) => ({
@@ -245,11 +252,14 @@ export const useFlowStore = create<FlowState>((set, get) => ({
       hasUnsavedChanges: true,
     })),
 
-  addNode: (node) =>
+  addNode: (node) => {
     set((state) => ({
       nodes: [...state.nodes, node],
       hasUnsavedChanges: true,
-    })),
+    }));
+    // Fit view to the new node
+    setTimeout(() => get().fitView?.(), 0);
+  },
 
   updateNodeData: (nodeId, data) =>
     set((state) => ({
@@ -272,6 +282,9 @@ export const useFlowStore = create<FlowState>((set, get) => ({
   setFlowName: (name) => set({ flowName: name, hasUnsavedChanges: true }),
   setFlowDescription: (description) =>
     set({ flowDescription: description, hasUnsavedChanges: true }),
+
+  // Viewport actions
+  setFitView: (fitView) => set({ fitView }),
 
   // Save actions
   setAutomationId: (id) => set({ automationId: id }),
