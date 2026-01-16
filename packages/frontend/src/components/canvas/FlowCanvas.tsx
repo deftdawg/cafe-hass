@@ -57,7 +57,7 @@ export function FlowCanvas() {
     isShowingTrace,
     traceExecutionPath,
     canDeleteEdge,
-    setFitView,
+    setOnNodeAdded,
   } = useFlowStore();
 
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
@@ -71,10 +71,12 @@ export function FlowCanvas() {
     setViewport({ x: 0, y: 0, zoom: 0.75 });
   }, [setViewport]);
 
-  // Pass fitView to the store
+  // Auto-zoom to new nodes
   useEffect(() => {
-    setFitView(fitView);
-  }, [fitView, setFitView]);
+    setOnNodeAdded((newNode) => {
+      fitView({ nodes: [newNode], duration: 300 });
+    });
+  }, [fitView, setOnNodeAdded]);
 
   const onSelectionChange = useCallback(
     ({ nodes: selectedNodes }: OnSelectionChangeParams) => {
