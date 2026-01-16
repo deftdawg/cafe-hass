@@ -64,7 +64,7 @@ export function SetVariablesFields({ node, onChange }: SetVariablesFieldsProps) 
         </p>
       ) : (
         variableEntries.map(([key, value], index) => (
-          <div key={`${key}-${index}`} className="rounded-lg border border-border bg-muted/30 p-3">
+          <div key={index} className="rounded-lg border border-border bg-muted/30 p-3">
             <div className="mb-2 flex items-center justify-between">
               <span className="font-medium text-muted-foreground text-xs">
                 Variable {index + 1}
